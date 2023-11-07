@@ -9,8 +9,8 @@ FROM nginx:1.23.2-alpine
 # Add a new user "app" with user id 6001
 RUN adduser -D -u 6001 app
 
-RUN mkdir -p /usr/share/nginx/html/tra/demo-app-simulator-ui
-COPY --from=builder /app/dist/ /usr/share/nginx/html/tra/demo-app-simulator-ui
+RUN mkdir -p /usr/share/nginx/html/tra/tra-end-user-ui
+COPY --from=builder /app/dist/ /usr/share/nginx/html/tra/tra-end-user-ui
 
 # Change port 8080
 EXPOSE 8080
