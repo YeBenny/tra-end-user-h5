@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
 import { useConfigStore } from '../stores/config'
-import CryptoJS from 'crypto-js/crypto-js'
 
 axios.defaults.withCredentials = true
 
@@ -52,67 +51,6 @@ const getHeaders = (appId, signature, timestamp) => {
     headers['timestamp'] = timestamp
   }
   return headers
-}
-
-function registerUpstreamUser(upstreamUserId, appId, appSecret) {
-  const httpMethod = 'POST'
-  const httpPath = '/v1/tra/users/register'
-  const requestBody = { upstreamUserId: upstreamUserId }
-  const timestamp = Math.floor(Date.now() / 1000)
-  const source = httpMethod + httpPath + JSON.stringify(requestBody) + timestamp
-  let hashHmacSHA256 = CryptoJS.HmacSHA256(source, appSecret)
-  let signature = CryptoJS.enc.Base64.stringify(hashHmacSHA256)
-
-  let { config } = useConfigStore()
-  return axios.post(
-    `${config.webTraBusinessBaseUrl}/users/register`,
-    { ...requestBody },
-    {
-      headers: getHeaders(appId, signature, timestamp)
-    }
-  )
-}
-
-function issueTra(upstreamUserId, traId, remark, appId, appSecret) {
-  const httpMethod = 'POST'
-  const httpPath = '/v1/tra/tras/issue'
-  const requestBody = {
-    upstreamUserId: upstreamUserId,
-    traId: traId,
-    remark: remark
-  }
-  console.log(JSON.stringify(requestBody))
-  const timestamp = Math.floor(Date.now() / 1000)
-  const source = httpMethod + httpPath + JSON.stringify(requestBody) + timestamp
-  let hashHmacSHA256 = CryptoJS.HmacSHA256(source, appSecret)
-  let signature = CryptoJS.enc.Base64.stringify(hashHmacSHA256)
-
-  let { config } = useConfigStore()
-  return axios.post(
-    `${config.webTraBusinessBaseUrl}/tras/issue`,
-    { ...requestBody },
-    {
-      headers: getHeaders(appId, signature, timestamp)
-    }
-  )
-}
-
-function getTokenContext(upstreamUserId, appId, appSecret) {
-  const httpMethod = 'POST'
-  const httpPath = '/v1/tra/users/get-token'
-  const requestBody = { upstreamUserId: upstreamUserId }
-  const timestamp = Math.floor(Date.now() / 1000)
-  const source = httpMethod + httpPath + JSON.stringify(requestBody) + timestamp
-  let hashHmacSHA256 = CryptoJS.HmacSHA256(source, appSecret)
-  let signature = CryptoJS.enc.Base64.stringify(hashHmacSHA256)
-
-  // return axios.post(`/get-token-context`)
-  return {
-    timestamp: timestamp,
-    appId: appId,
-    upstreamUserId: upstreamUserId,
-    signature: signature
-  }
 }
 
 function getToken(upstreamUserId, appId, signature, timestamp) {
@@ -211,9 +149,6 @@ function redeemTRA(redemptionRuleId, redeemItems) {
 }
 
 export {
-  registerUpstreamUser,
-  issueTra,
-  getTokenContext,
   getToken,
   getSeriesList,
   getSeriesDetail,

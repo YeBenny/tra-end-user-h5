@@ -4,9 +4,7 @@ import router from '@/router'
 import Loading from '../components/Loading.vue'
 import EmptySeries from '../components/EmptySeries.vue'
 import ItemSeries from '../components/ItemSeries.vue'
-import { useConfigStore } from '../stores/config'
-import { storeToRefs } from 'pinia'
-import { getToken, getSeriesList } from '../axios'
+import { getSeriesList } from '../axios'
 
 const title = ref('My Series Title')
 const overlay = ref(false)
@@ -18,20 +16,6 @@ var startIndex = 1
 
 const onClickSeries = (series) => {
   router.push({ name: 'my-series-detail', params: { id: series.id } })
-}
-
-const getAppToken = async (upstreamUserId, appId, signature, timestamp) => {
-  let data
-  try {
-    overlay.value = true
-    data = await getToken(upstreamUserId, appId, signature, timestamp)
-    return data
-  } catch (err) {
-    console.log(err)
-    return data
-  } finally {
-    overlay.value = false
-  }
 }
 
 const getData = async () => {
@@ -85,17 +69,6 @@ onMounted(async () => {
     if (isBottom) {
       loadMoreData()
     }
-  }
-
-  let store = useConfigStore()
-  let { config } = storeToRefs(store)
-  let upstreamUserId = config.value.upstreamUserId
-  let appId = config.value.appId
-  let timestamp = config.value.timestamp
-  let signature = config.value.signature
-  let webTraAccessToken = await getAppToken(upstreamUserId, appId, signature, timestamp)
-  if (webTraAccessToken) {
-    config.value.webTraAccessToken = webTraAccessToken
   }
 
   await getData()
