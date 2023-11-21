@@ -34,7 +34,7 @@ axios.interceptors.response.use(
   }
 )
 
-const getHeaders = (appId, signature, timestamp) => {
+const getHeaders = (appId, signature, timestamp, functionName) => {
   let headers = {}
   let { config } = useConfigStore()
   let token = config.webTraAccessToken
@@ -50,18 +50,22 @@ const getHeaders = (appId, signature, timestamp) => {
   if (timestamp) {
     headers['timestamp'] = timestamp
   }
+  if (functionName) {
+    headers['functionName'] = functionName
+  }
   return headers
 }
 
 function getToken(upstreamUserId, appId, signature, timestamp) {
   let { config } = useConfigStore()
+  const functionName = 'getToken'
   return axios.post(
     `${config.webTraBaseUrl}/users/get-token`,
     {
       upstreamUserId: upstreamUserId
     },
     {
-      headers: getHeaders(appId, signature, timestamp)
+      headers: getHeaders(appId, signature, timestamp, functionName)
     }
   )
 }
