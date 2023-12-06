@@ -79,10 +79,12 @@ const shareViaWebShare = async () => {
                         />
                       </v-col>
                       <v-col cols="12">
-                        <v-card-text>#{{ asset.id }}</v-card-text>
-                        <v-chip v-if="asset.value === 0 || asset.writeOff === true">
-                          Redeemed
-                        </v-chip>
+                        <v-card-text>
+                          #{{ asset.id }}
+                          <v-chip v-if="asset.value === 0 || asset.writeOff === true">
+                            Redeemed
+                          </v-chip>
+                        </v-card-text>
                         <v-card-item>
                           <v-card-title>{{ tra.traInfo.title }}</v-card-title>
                           <v-card-subtitle>{{ tra.traInfo.description }}</v-card-subtitle>
